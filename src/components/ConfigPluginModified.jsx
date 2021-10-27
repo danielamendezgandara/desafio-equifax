@@ -123,8 +123,10 @@ const ConfigPluginModified = ({
           }})
 
       console.log(fieldsKeyValue)
+      setFieldKeyValue([...inputKeyValue,{[event.target.name]:event.target.value}])
 
-          //setFieldKeyValue(fieldsKeyValue)
+       
+        console.log(inputKeyValue)
      
 
         })}
@@ -289,14 +291,14 @@ const ConfigPluginModified = ({
                     )}
                    })}
                     <button>BORRAR</button>
-                    <button onClick={() =>handleAddFieldsList() }>ADD</button>
+                    <button>ADD</button>
                   </section>
                  
                   ):null}
                   {!Array.isArray(pluginSelect['config'][key]) && typeof(pluginSelect['config'][key])==='object'?
                   (<section>
                    <label>{key}</label>
-                   {(Object.keys(inputMap[0])).map((item,i)=>{
+                   {(Object.keys(fieldsMap[0])).map((item,i)=>{
                     return( <section>
                     <section><label>{item}</label> <input type="text"data-id={key} data-name={i} data-tag={index} name={item} onChange={(event)=>handleChangeInputMap(event)}/></section>
                     <button>BORRAR</button>
