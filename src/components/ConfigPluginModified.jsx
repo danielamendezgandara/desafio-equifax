@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import ModalSave from "../elements/ModalSave";
 import ModalDelete from "../elements/ModalDelete";
 
@@ -12,103 +12,176 @@ const ConfigPluginModified = ({
 }) => {
   const [modalSave, setModalSave] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
+  const [inputKeyValue,setFieldKeyValue]=useState([]);
+  const [inputList,setFieldsList]=useState([]);
+  const [inputMap,setFieldsMap]=useState([]);
 
-  const typeValue = (key, value, index, title) => {
-    if (typeof value === "string" || typeof value === "number") {
-      return (
-        <div>
-          <label>{key}</label>
-          <input
-            type="text"
-            placeholder={value}
-            data-id="config"
-            data-name={title}
-            data-tag={index}
-            name={key}
-            onChange={handleInputChange}
-          />
-        </div>
-      );
-    } else if (Array.isArray(value)) {
-      return (
-        <div>
-          <div>
-            <label>{key}</label>
-            {value.map((item, id) => {
-              return <div key={id}>{typeValue(id, item, id, key)}</div>;
-            })}
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <label>{key}</label>
-          {Object.keys(value).map((i, id) => {
-            return <div key={id}>{typeValue(i, value[i], key, id)}</div>;
-          })}
-        </div>
-      );
-    }
-  };
 
-  let pluginSelectModified = pluginSelect;
-  let dataObj = pluginSelectModified;
-  const handleInputChange = (event) => {
+  console.log(inputList)
+ /* const firstKeysPlugin=Object.keys(pluginSelect)
+  let firstKeysConfig=[]
+
+  if(firstKeysPlugin.length !== 0){
+    firstKeysPlugin.forEach((key)=>{
+      if(key==='config'){
+        Object.keys(pluginSelect[key]).forEach((keyConfig)=>{
+            firstKeysConfig.push(keyConfig)
+        })
+      }
+    })
+  }*/
+    const pluginSelectModified=JSON.parse(JSON.stringify(pluginSelect))
+    console.log(pluginSelectModified)
+  
+
+   // const createInput=()=>{
+      let firstKeysConfig=[]
+      let fieldsKeyValue=[]
+      let fieldsList=[]
+      let fieldsMap=[] 
     
-    let name = event.target.name;
-    let indexArray = event.target.dataset.tag;
-    let valueParam = event.target.value;
+      const firstKeysPlugin=Object.keys(pluginSelect)
+    
+      if(firstKeysPlugin.length !== 0){
+        firstKeysPlugin.forEach((key)=>{
+          if(key==='config'){
+            Object.keys(pluginSelect[key]).forEach((keyConfig)=>{
+                firstKeysConfig.push(keyConfig)
+                if(Array.isArray(pluginSelect[key][keyConfig])){
+                   fieldsList.push(pluginSelect[key][keyConfig][0])
+                   //setFieldsList(fieldsList)
+    
+                }else if(!Array.isArray(pluginSelect[key][keyConfig]) && typeof(pluginSelect[key][keyConfig])==='object')
+                {
+                  fieldsMap.push(pluginSelect[key][keyConfig])
+                  //setFieldsMap(fieldsMap)
+                }else{
+                  fieldsKeyValue.push({[keyConfig]:pluginSelect[key][keyConfig]})
+                  //setFieldKeyValue(fieldsKeyValue)
+                }
+            })
+          } 
+        })
+      }
+    //}
 
-    let config = {};
-    if (pluginSelectModified[name]) {
-      pluginSelectModified[name] = valueParam;
-    } else {
-      const keysPluginSelect = Object.keys(pluginSelectModified);
-      keysPluginSelect.forEach((key) => {
-        if (key === "config") {
-          const keysConfigObj = Object.keys(pluginSelectModified[key]);
-          keysConfigObj.forEach((keyConfig) => {
-            const paramConfig = pluginSelectModified["config"][keyConfig];
-            if (keyConfig === name) {
-              pluginSelectModified["config"][keyConfig] = valueParam;
-            } else {
-              if (Array.isArray(paramConfig)) {
-                paramConfig.forEach((obj, index) => {
-                  if (index === Number(indexArray) && obj[name]) {
-                    pluginSelectModified["config"][keyConfig][index][
-                      name
-                    ] = valueParam;
-                  } else if (obj[name] === undefined) {
-                    const nameVariables = Object.keys(obj);
-                    nameVariables.forEach((variable) => {
-                      Object.keys(obj[variable]).forEach((key) => {
-                        if (key === name) {
-                          paramConfig[index][variable][key] = valueParam;
-                        }
-                      });
-                    });
-                  }
-                });
-              } else if (!Array.isArray(paramConfig)) {
-                Object.keys(paramConfig).forEach((d) => {
-                  if (d === name) {
-                    paramConfig[d] = valueParam;
-                  }
-                  config = {
-                    ...pluginSelectModified["config"],
-                    ...{ [keyConfig]: paramConfig },
-                  };
-                });
-                dataObj = { ...pluginSelectModified, config };
-              }
+
+   //useEffect(()=>{createInput()}) 
+  
+  //const [inputKeyValue,setFieldKeyValue]=useState([]);
+  //const [inputList,setFieldsList]=useState({});
+  //const [inputMap,setFieldsMap]=useState({});
+  console.log(firstKeysConfig)
+  
+  
+ // console.log(pluginSelect)
+
+  /*Object.keys(pluginSelect.config).forEach((firstKey)=>{
+      setFirstKeys([firstKey]);
+  
+  })*/
+ /* const firstKeysPlugin=Object.keys(pluginSelect)
+  let firstKeysConfig=[]
+  let fieldsKeyValue=[]
+  let fieldsList=[]
+  let fieldsMap=[]
+  
+  
+  if(firstKeysPlugin.length !== 0){
+    firstKeysPlugin.forEach((key)=>{
+      if(key==='config'){
+        Object.keys(pluginSelect[key]).forEach((keyConfig)=>{
+            firstKeysConfig.push(keyConfig)
+            if(Array.isArray(pluginSelect[key][keyConfig])){
+               fieldsList.push(pluginSelect[key][keyConfig][0])
+            }else if(!Array.isArray(pluginSelect[key][keyConfig]) && typeof(pluginSelect[key][keyConfig])==='object')
+            {
+              fieldsMap.push(pluginSelect[key][keyConfig])
+            }else{
+              fieldsKeyValue.push({[keyConfig]:pluginSelect[key][keyConfig]})
+              setFieldKeyValue(fieldsKeyValue)
             }
-          });
-        }
-      });
-    }
-  };
+        })
+      } 
+    })
+  }*/
+   
+ 
+  
 
+
+  const handleChangeInputValue = (event) => {
+     console.log(event.target.name)
+     //console.log(fieldsKeyValue)
+
+     if(fieldsKeyValue.length >0){
+      fieldsKeyValue.forEach((obj)=>{
+          Object.keys(obj).forEach((name)=>{
+          if(event.target.name===name){
+             obj[event.target.name]=event.target.value;
+             
+          }})
+
+      console.log(fieldsKeyValue)
+
+          //setFieldKeyValue(fieldsKeyValue)
+     
+
+        })}
+      
+      
+      }
+     
+
+  const handleChangeInputMap = (event)=>{
+       console.log(event.target.dataset.tag,event.target.name,event.target.dataset.id)
+       if( fieldsMap.length >0){
+        fieldsMap.forEach((obj)=>{
+          Object.keys(obj).forEach((name)=>{
+          if(event.target.name===name){
+             obj[event.target.name]=event.target.value;
+             
+          }})
+
+      
+      console.log( fieldsMap)
+     
+
+        })}
+
+
+    }
+
+    const handleChangeInputList = (event)=>{
+      console.log(event.target.dataset.tag,event.target.name)
+      if(fieldsList.length >0){
+        fieldsList.forEach((obj)=>{
+         Object.keys(obj).forEach((name)=>{
+         if(event.target.name===name){
+            obj[event.target.name]=event.target.value;
+            
+         }})
+
+     
+     //console.log(fieldsMap)
+    
+
+       })}
+      console.log(inputList)
+   }
+
+   /*const handleAddFieldsList = () => {
+    setFieldsList([...inputList,inputList])
+    console.log(inputList)
+    console.log('hola')
+  }*/
+
+    
+    
+
+  //console.log(inputMap)
+  //console.log(inputKeyValue)
+ 
   const openModalDelete = (e) => {
     e.preventDefault();
     setModalDelete(true);
@@ -138,7 +211,7 @@ const ConfigPluginModified = ({
     <div>
       <span>ConfigPluginModified</span>
       <form onSubmit={(e) => changesSaved(e)}>
-        {pluginSelect === 0 ? (
+        {firstKeysPlugin.length === 0 ? (
           <h1 className="text-center fst-italic text-black-50">
             Select and modify plugins
           </h1>
@@ -171,17 +244,14 @@ const ConfigPluginModified = ({
             <input
               type="text"
               data-name="id"
-              placeholder={pluginSelect.id}
               data-tag="id"
               name="id"
-              onChange={(e) => handleInputChange(e)}
             />
             <label>dependencies</label>
             <select
               data-name="dependencies"
               data-tag="dependencies"
               name="dependencies"
-              onChange={handleInputChange}
             >
               <option selected>dependencies</option>
               <option value="input">input</option>
@@ -196,10 +266,8 @@ const ConfigPluginModified = ({
             <input
               type="text"
               data-name="text"
-              placeholder={pluginSelect.stepName}
               data-tag="stepName"
               name="stepName"
-              onChange={handleInputChange}
             />
             <label>mainClass</label>
             <input
@@ -207,25 +275,45 @@ const ConfigPluginModified = ({
               data-name="mainClass"
               data-tag="mainClass"
               name="mainClass"
-              placeholder={pluginSelect.mainClass}
-              onChange={handleInputChange}
             />
             <label>Config</label>
-            {Object.keys(pluginSelect.config).map((key, index) => {
-              return (
+              {firstKeysConfig.map((key,index)=>{
+                return( 
                 <div key={index}>
-                  {typeValue(key, pluginSelect.config[key])}
-                </div>
-              );
-            })}
+                  {Array.isArray(pluginSelect['config'][key])?
+                  (<section>
+                    <label>{key}</label>
+                   {Object.keys(fieldsList[0]).map((item)=>{
+                    if(pluginSelect['config'][key]){
+                    return( <section><label>{item}</label> <input type="text" data-tag={key} name={item} onChange={(event)=>handleChangeInputList(event)}/></section>
+                    )}
+                   })}
+                    <button>BORRAR</button>
+                    <button onClick={() =>handleAddFieldsList() }>ADD</button>
+                  </section>
+                 
+                  ):null}
+                  {!Array.isArray(pluginSelect['config'][key]) && typeof(pluginSelect['config'][key])==='object'?
+                  (<section>
+                   <label>{key}</label>
+                   {(Object.keys(inputMap[0])).map((item,i)=>{
+                    return( <section>
+                    <section><label>{item}</label> <input type="text"data-id={key} data-name={i} data-tag={index} name={item} onChange={(event)=>handleChangeInputMap(event)}/></section>
+                    <button>BORRAR</button>
+                    </section>
+                    )
+                   })}
+                   <button>ADD</button>
+                  </section>
+                  ):null}
+                   { typeof(pluginSelect['config'][key])!=='object'?
+                  (
+                   <section><label>{key}</label> <input type="text" name ={key} onChange={(event) => handleChangeInputValue(event)} /></section>
+                  ):null} 
+                </div>)
+              
+              })}
             <div>
-              <button type="submit" onClick={() => saveId(pluginSelect.uid)}>
-                SAVE
-              </button>
-              {modalSave && <ModalSave closeModal={setModalSave} />}
-              <button type="button" /* onSubmit={() => cancelEdit()} */>
-                CANCEL
-              </button>
             </div>
           </div>
         )}

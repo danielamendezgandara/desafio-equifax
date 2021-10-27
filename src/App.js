@@ -9,9 +9,11 @@ import yaml from 'js-yaml';
 function App() {
 
   const [listPlugin, setListPlugin] = useState([]);
-  const [pluginSelect,setPlugin] = useState(0);
+  const [pluginSelect,setPlugin] = useState({});
   const [dataYamlJson, setDataYamlJson] = useState([]);
   const [orchestration,setOrchestration]=useState([])
+  
+  
 
   useEffect(() => {
     const ymlUrlFiles = [
@@ -35,13 +37,24 @@ function App() {
     Promise.all(ymlUrlFiles.map(async (yml) => await YAMLtoJSON(yml))).then((data) => setDataYamlJson(data));
   }, []);
 
+
+ 
   const filterPluggin = (e) => {
     if(listPlugin!== null){
       const newPluggin = listPlugin.filter((item) => item.uid === e);
       setPlugin(newPluggin[0])
-      return <ConfigPluginModified pluginSelect={pluginSelect} setPlugin={setPlugin} />
+     
+ 
+
+      
+
+      //return <ConfigPluginModified pluginSelect={pluginSelect} setPlugin={setPlugin} />
     }
   };
+
+ 
+
+ 
 
   return (
     <div className="App container-fluid">
